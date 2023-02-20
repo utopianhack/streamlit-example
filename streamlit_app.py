@@ -1,11 +1,13 @@
 import streamlit as st
-import tldextract
+from urllib.parse import urlparse
 
-st.title("TLD Extractor")
+st.title("Extract Domain from URL")
 
+# Get URL input from user
 url = st.text_input("Enter a URL:")
 
+# Extract domain from URL
 if url:
-    with st.spinner('Extracting TLD...'):
-        extracted = tldextract.extract(url)
-        st.success(f"The TLD of {url} is {extracted.suffix}")
+    parsed_url = urlparse(url)
+    domain = parsed_url.netloc
+    st.write("Domain:", domain)
