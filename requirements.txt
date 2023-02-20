@@ -1,6 +1,4 @@
 altair
 pandas
 streamlit
-pyvuln
-spacy
 bs4
