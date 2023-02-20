@@ -1,19 +1,17 @@
 import streamlit as st
-import pandas as pd
+import mmh3
+import requests
 
-# Load CISA Known Exploited Vulnerabilities catalog as a dataframe
-cisa_catalog = pd.read_csv('CISA_Known_Exploited_Vulnerabilities.csv')
+def get_favicon_hash(url):
+    # Retrieve the website's favicon using a GET request to the URL + "/favicon.ico".
+    icon = requests.get(url + "/favicon.ico").content
+    # Calculate the hash of the favicon using the mmh3 library.
+    hash_value = mmh3.hash(icon)
+    return hash_value
 
-# Get the date the catalog was last updated
-last_updated = cisa_catalog['Date Last Updated'][0]
-
-# Get the 5 most recently added CVEs
-recent_cves = cisa_catalog[['CVE ID', 'Date Added']].sort_values(by=['Date Added'], ascending=False)[:5]
-
-# Display the date the catalog was last updated
-st.write("CISA Known Exploited Vulnerabilities catalog was last updated on ", last_updated)
-
-# Display the 5 most recently added CVEs
-st.write("The 5 most recently added CVEs are:")
-for index, row in recent_cves.iterrows():
-    st.write(row['CVE ID'], " (Added on ", row['Date Added'], ")")
+def app():
+    st.title("Calculate Favicon Hash")
+    url = st.text_input("Enter a URL:")
+    if st.button("Calculate"):
+        hash_value = get_favicon_hash(url)
+        st.success(f"The favicon hash value is {hash_value}.")
