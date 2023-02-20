@@ -1,20 +1,26 @@
+import pandas as pd
 import streamlit as st
-from urllib.parse import urlparse
+from wordcloud import WordCloud
+import matplotlib.pyplot as plt
 
-def get_domain(url):
-    parsed_url = urlparse(url)
-    domain = parsed_url.netloc.split('.')
-    if len(domain) == 2:
-        return domain[0], domain[1]
-    elif len(domain) == 3:
-        return domain[1], domain[2]
-    else:
-        return None, None
+def load_data():
+    df = pd.read_csv('CISA_Known_Exploited_Vulnerabilities.csv')
+    return df
 
-st.title("Domain Extractor")
+def generate_wordcloud(df):
+    vendors = df['Vendor'].dropna()
+    vendor_counts = vendors.value_counts()
+    wordcloud = WordCloud(background_color='white').generate_from_frequencies(vendor_counts)
+    return wordcloud
 
-url = st.text_input("Enter a URL")
-if url:
-    top_level_domain, second_level_domain = get_domain(url)
-    st.write(f"Top Level Domain: {top_level_domain}")
-    st.write(f"Second Level Domain: {second_level_domain}")
+def main():
+    st.title('CISA Known Exploited Vulnerabilities')
+    st.subheader('Most Common Vendors Wordcloud')
+
+    df = load_data()
+    wordcloud = generate_wordcloud(df)
+
+    st.image(wordcloud.to_array())
+
+if __name__ == '__main__':
+    main()
