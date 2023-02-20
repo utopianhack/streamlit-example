@@ -1,29 +1,18 @@
 import streamlit as st
-import nltk
-from nltk.util import ngrams
-from collections import Counter
+import pandas as pd
+from wordcloud import WordCloud
+import matplotlib.pyplot as plt
 
-def extract_ngrams(text, n):
-    # Tokenize the text
-    tokens = nltk.word_tokenize(text.lower())
-    # Create the ngrams
-    n_grams = ngrams(tokens, n)
-    # Count the ngrams
-    ngram_freq = Counter(n_grams)
-    return ngram_freq
-  
-# Set the page title
-st.title("Most common ngrams")
+# Load the data from the CSV file
+data = pd.read_csv('path/to/known_exploits.csv')
 
-# Add a text input box for the user to enter the text
-text_input = st.text_input("Enter text here:")
+# Group the data by product and count the number of vulnerabilities
+product_counts = data.groupby('Product').count()['ID'].sort_values(ascending=False)
 
-# Add a slider to choose the n-gram size
-n = st.slider("Choose n-gram size:", 2, 5, 3)
+# Generate the wordcloud
+wordcloud = WordCloud(width=800, height=400, background_color='white').generate_from_frequencies(product_counts)
 
-# Call the extract_ngrams function and display the results as a pie chart
-if text_input:
-    ngram_freq = extract_ngrams(text_input, n)
-    labels = [' '.join(ngram) for ngram in ngram_freq.keys()]
-    values = list(ngram_freq.values())
-    st.pyplot(fig1)
+# Define the Streamlit app
+st.title("CISA's Known Exploited Vulnerabilities - Most Frequent Products")
+st.set_option('deprecation.showPyplotGlobalUse', False)
+st.pyplot(plt.figure(figsize=(20,10)))
