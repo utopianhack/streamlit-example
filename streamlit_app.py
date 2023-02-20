@@ -1,33 +1,33 @@
 import streamlit as st
-import requests
-from bs4 import BeautifulSoup
+import pandas as pd
+import nltk
+from nltk.tokenize import word_tokenize
+from nltk.collocations import BigramAssocMeasures, BigramCollocationFinder
+import matplotlib.pyplot as plt
 
-def get_cves(url):
-    # Make a GET request to the URL
-    response = requests.get(url)
+def get_ngrams(text, n=2, num=10):
+    # tokenize the text
+    tokens = word_tokenize(text)
+    # calculate the frequency distribution of ngrams
+    ngram_measures = BigramAssocMeasures()
+    finder = BigramCollocationFinder.from_words(tokens)
+    finder.apply_freq_filter(2)  # filter out ngrams that occur less than 2 times
+    ngrams = finder.nbest(ngram_measures.raw_freq, num)
+    freq_dist = finder.ngram_fd.items()
+    # return the top n ngrams and their frequency
+    return ngrams, freq_dist[:num]
 
-    # Use BeautifulSoup to parse the HTML content
-    soup = BeautifulSoup(response.content, 'html.parser')
+st.title('Ngram Visualizer')
 
-    # Find all the CVE elements on the page
-    cve_elements = soup.find_all('a', href=lambda href: href and 'cve.mitre.org/cgi-bin/cvename.cgi' in href)
+text = st.text_area('Enter text')
 
-    # Extract the CVE numbers from the elements
-    cves = [cve.text for cve in cve_elements]
+if st.button('Generate Ngrams'):
+    ngrams, freq_dist = get_ngrams(text)
+    # convert frequency distribution to a pandas dataframe
+    freq_df = pd.DataFrame(freq_dist, columns=['ngram', 'frequency']).sort_values(by='frequency', ascending=False)
+    # plot the most frequent ngrams
+    plt.bar(freq_df['ngram'], freq_df['frequency'])
+    plt.xticks(rotation=90)
+    st.pyplot()
 
-    return cves
-# Define the Streamlit app
-def app():
-    # Add a sidebar to the app
-    st.sidebar.title('Enter a URL')
-    url = st.sidebar.text_input('')
-
-    # Create a button to start the scraping process
-    if st.sidebar.button('Get CVEs'):
-        # Scrape the CVEs
-        cves = get_cves(url)
-
-        # Display the results in the main section
-        st.write('CVEs found:')
-        for cve in cves:
-            st.write(f'- {cve}')
+    
