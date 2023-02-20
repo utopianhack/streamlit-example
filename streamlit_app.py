@@ -1,20 +1,29 @@
 import streamlit as st
-import pandas as pd
-import matplotlib.pyplot as plt
+import nltk
+from nltk.util import ngrams
+from collections import Counter
 
-# Load the data
-df = pd.read_csv('https://www.cisa.gov/sites/default/files/csv/known_exploited_vulnerabilities.csv')
+def extract_ngrams(text, n):
+    # Tokenize the text
+    tokens = nltk.word_tokenize(text.lower())
+    # Create the ngrams
+    n_grams = ngrams(tokens, n)
+    # Count the ngrams
+    ngram_freq = Counter(n_grams)
+    return ngram_freq
+  
+# Set the page title
+st.title("Most common ngrams")
 
-# Group the data by vendor and count the occurrences
-vendor_counts = df.groupby('Vendor').size().reset_index(name='Counts')
+# Add a text input box for the user to enter the text
+text_input = st.text_input("Enter text here:")
 
-# Sort the data by counts
-vendor_counts = vendor_counts.sort_values(by='Counts', ascending=False)
+# Add a slider to choose the n-gram size
+n = st.slider("Choose n-gram size:", 2, 5, 3)
 
-# Create the pie chart
-fig, ax = plt.subplots()
-ax.pie(vendor_counts['Counts'], labels=vendor_counts['Vendor'], autopct='%1.1f%%')
-ax.set_title('Most Frequent Vendors on CISA Known Exploited Vulnerabilities Catalog')
-
-# Display the pie chart in the Streamlit app
-st.pyplot(fig)
+# Call the extract_ngrams function and display the results as a pie chart
+if text_input:
+    ngram_freq = extract_ngrams(text_input, n)
+    labels = [' '.join(ngram) for ngram in ngram_freq.keys()]
+    values = list(ngram_freq.values())
+    st.pyplot(fig1)
