@@ -7,3 +7,4 @@ nltk
 matplotlib
 collections
 counter
+wordcloud
