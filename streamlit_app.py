@@ -1,33 +1,29 @@
 import streamlit as st
 import requests
-from bs4 import BeautifulSoup, SoupStrainer
+from bs4 import BeautifulSoup
 from wordcloud import WordCloud
-import matplotlib.pyplot as plt
 
-# define the SoupStrainer to parse only visible text
-only_visible_tags = SoupStrainer(lambda tag: tag.name == 'p' and tag.text.strip() != '')
-
-def get_text(url):
+def scrape_text(url):
     response = requests.get(url)
-    html_content = response.content
-    soup = BeautifulSoup(html_content, 'html.parser', parse_only=only_visible_tags)
-    text = soup.get_text()
+    soup = BeautifulSoup(response.content, 'html.parser')
+    text = ' '.join([p.text for p in soup.find_all('p')])
     return text
 
-
 def generate_wordcloud(text):
-    wordcloud = WordCloud(width=800, height=800,
-                          background_color='white',
-                          min_font_size=10).generate(text)
-    return wordcloud
+    wordcloud = WordCloud(width=800, height=800, background_color='white', min_font_size=10).generate(text)
+    return wordcloud.to_image()
 
-st.title('Webpage Word Cloud Generator')
-url = st.text_input('Enter the URL of the webpage you want to generate the word cloud for:')
-if st.button('Generate Word Cloud'):
-    text = get_text(url)
-    text = ' '.join([t.strip() for t in text])
-    wordcloud = generate_wordcloud(text)
-    plt.figure(figsize=(8, 8), facecolor=None)
-    plt.imshow(wordcloud)
-    plt.axis("off")
-    st.pyplot()
+# Set the title of the app
+st.title('Web Scraper and Wordcloud Generator')
+
+# Add a text input for the URL
+url = st.text_input('Enter the URL of the webpage you want to scrape:')
+
+# Add a button to start scraping
+if st.button('Scrape'):
+    # Call the scrape_text function to get the text
+    text = scrape_text(url)
+
+    # Generate the wordcloud and display it
+    image = generate_wordcloud(text)
+    st.image(image, use_column_width=True)
