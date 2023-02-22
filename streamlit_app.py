@@ -1,19 +1,26 @@
 import streamlit as st
-import tldextract
-import pandas as pd
-import matplotlib.pyplot as plt
+import requests
+import hashlib
+from PIL import Image
+from io import BytesIO
 
+def get_favicon_hash(url):
+    try:
+        # fetch the favicon
+        response = requests.get(f"{url}/favicon.ico")
+        img = Image.open(BytesIO(response.content))
+        # calculate the MD5 hash value
+        md5 = hashlib.md5()
+        md5.update(response.content)
+        return md5.hexdigest()
+    except:
+        st.write("Error: Could not fetch favicon from the provided URL")
+        return None
 
-st.title("Extract URLs and plot their TLDs")
+st.title("Calculate Hash of Favicon")
+url = st.text_input("Enter the URL")
 
-# Take text input
-text = st.text_area("Enter text", height=200)
-
-# Extract URLs and plot TLDs
-if st.button("Extract URLs"):
-    urls = []
-    for line in text.split('\n'):
-        urls += re.findall("(?P<url>https?://[^\s]+)", line)
-    tlds = [tldextract.extract(url).suffix for url in urls]
-    tld_counts = pd.Series(tlds).value_counts()
-    st.bar_chart(tld_counts)
+if url:
+    favicon_hash = get_favicon_hash(url)
+    if favicon_hash:
+        st.write(f"The MD5 hash value of the favicon at {url} is {favicon_hash}")
