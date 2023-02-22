@@ -1,13 +1,22 @@
 import streamlit as st
+from wordcloud import WordCloud
+import pandas as pd
 
-def word_char_count(text):
-    words = len(text.split())
-    chars = len(text)
-    return words, chars
+# Set the app title
+st.title("Character Wordcloud Generator")
 
-st.title("Word and Character Count App")
-user_input = st.text_area("Enter text here:")
-if st.button("Count!"):
-    words, chars = word_char_count(user_input)
-    st.write(f"Word Count: {words}")
-    st.write(f"Character Count: {chars}")
+# Add a text input field
+text = st.text_input("Enter your text here:")
+
+# Create a function to generate the wordcloud
+def generate_wordcloud(text):
+    # Count the frequency of each character
+    char_count = pd.Series(list(text)).value_counts().to_dict()
+    # Create a wordcloud
+    wordcloud = WordCloud(width=800, height=800, background_color="white").generate_from_frequencies(char_count)
+    # Display the wordcloud
+    st.image(wordcloud.to_array())
+
+# Call the generate_wordcloud function with the input text
+if text:
+    generate_wordcloud(text)
