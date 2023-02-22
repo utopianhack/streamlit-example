@@ -6,5 +6,4 @@ nltk
 matplotlib
 wordcloud
 tldextract
-re
 collections
