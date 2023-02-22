@@ -1,34 +1,17 @@
 import streamlit as st
-from wordcloud import WordCloud
-import matplotlib.pyplot as plt
+import spacy
 
-def generate_wordcloud(text):
-    # Tokenize the text into words
-    words = text.split()
+nlp = spacy.load('en_core_web_sm')
 
-    # Count the frequency of each word
-    word_counts = {}
-    for word in words:
-        if word in word_counts:
-            word_counts[word] += 1
-        else:
-            word_counts[word] = 1
+def extract_organizations(text):
+    doc = nlp(text)
+    organizations = [ent.text for ent in doc.ents if ent.label_ == 'ORG']
+    return organizations
 
-    # Generate the wordcloud
-    wordcloud = WordCloud(width=800, height=800, background_color='white', max_words=50).generate_from_frequencies(word_counts)
+st.title('Organization Extractor')
 
-    # Display the wordcloud
-    plt.figure(figsize=(8,8))
-    plt.imshow(wordcloud, interpolation='bilinear')
-    plt.axis('off')
-    st.pyplot()
+text = st.text_input('Enter some text')
 
-st.set_option('deprecation.showPyplotGlobalUse', False)
-st.title("Wordcloud Generator")
-
-# Create a text input box for the user to input their text
-input_text = st.text_input("Enter some text")
-
-# When the user submits the text, generate and display the wordcloud
-if st.button("Generate Wordcloud"):
-    generate_wordcloud(input_text)
+if text:
+    organizations = extract_organizations(text)
+    st.write('Organizations:', organizations)
