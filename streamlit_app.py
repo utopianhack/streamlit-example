@@ -9,9 +9,7 @@ def extract_organizations(text):
     return organizations
 
 st.title('Organization Extractor')
-
 text = st.text_input('Enter some text')
-
 if text:
     organizations = extract_organizations(text)
     st.write('Organizations:', organizations)
