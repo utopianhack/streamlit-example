@@ -1,25 +1,34 @@
 import streamlit as st
-import pandas as pd
-from tldextract import extract
+from wordcloud import WordCloud
+import matplotlib.pyplot as plt
 
-st.title("Extract Domain Names and TLDs from CSV")
+def generate_wordcloud(text):
+    # Tokenize the text into words
+    words = text.split()
 
-# Create file uploader
-uploaded_file = st.file_uploader("Choose a file", type=["csv"])
+    # Count the frequency of each word
+    word_counts = {}
+    for word in words:
+        if word in word_counts:
+            word_counts[word] += 1
+        else:
+            word_counts[word] = 1
 
-# Read CSV file
-df = pd.read_csv(uploaded_file)
-    
-# Extract domain names and TLDs
-domains = []
-tlds = []
+    # Generate the wordcloud
+    wordcloud = WordCloud(width=800, height=800, background_color='white', max_words=50).generate_from_frequencies(word_counts)
 
-for index, row in df.iterrows():
-    domain = extract(row['Website']).domain
-    tld = extract(row['Website']).suffix
-    domains.append(domain)
-    tlds.append(tld)
+    # Display the wordcloud
+    plt.figure(figsize=(8,8))
+    plt.imshow(wordcloud, interpolation='bilinear')
+    plt.axis('off')
+    st.pyplot()
 
-# Create new dataframe and display in Streamlit app
-new_df = pd.DataFrame({'Domain': domains, 'TLD': tlds})
-st.write(new_df)
+
+st.title("Wordcloud Generator")
+
+# Create a text input box for the user to input their text
+input_text = st.text_input("Enter some text")
+
+# When the user submits the text, generate and display the wordcloud
+if st.button("Generate Wordcloud"):
+    generate_wordcloud(input_text)
