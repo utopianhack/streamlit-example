@@ -1,12 +1,6 @@
-altair
 pandas
 streamlit
 beautifulsoup4
 requests
 nltk
 matplotlib
-counter
-wordcloud
-tldextract
-hashlib
-re
