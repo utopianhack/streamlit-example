@@ -8,3 +8,6 @@ matplotlib
 counter
 wordcloud
 tldextract
+hashlib
+PIL
+io
