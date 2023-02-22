@@ -1,27 +1,25 @@
 import streamlit as st
 import pandas as pd
-import re
-from collections import Counter
+from tldextract import extract
 
-# Step 1: File upload widget
-csv_file = st.file_uploader("Upload CSV", type=["csv"])
+st.title("Extract Domain Names and TLDs from CSV")
 
+# Create file uploader
+uploaded_file = st.file_uploader("Choose a file", type=["csv"])
+if uploaded_file is not None:
+    # Read CSV file
+    df = pd.read_csv(uploaded_file)
+    
+    # Extract domain names and TLDs
+    domains = []
+    tlds = []
 
-df = pd.read_csv(csv_file)
+    for index, row in df.iterrows():
+        domain = extract(row['Website']).domain
+        tld = extract(row['Website']).suffix
+        domains.append(domain)
+        tlds.append(tld)
 
-# Step 3: Extract URLs from DataFrame
-pattern = r"(?P<url>https?://[^\s]+)"
-urls = df["text"].str.extractall(pattern)["url"].tolist()
-
-# Step 4: Count TLD occurrences
-tlds = [re.search(r"(?<=\.)\w+$", url).group(0) for url in urls]
-tld_counts = Counter(tlds)
-
-# Step 5: Display URLs in a Streamlit DataFrame
-st.write("Extracted URLs:")
-st.dataframe(pd.DataFrame(urls, columns=["URL"]))
-
-# Step 6: Display histogram of most common TLDs
-st.write("Most common TLDs:")
-tld_counts_df = pd.DataFrame.from_dict(tld_counts, orient="index", columns=["count"])
-st.bar_chart(tld_counts_df.sort_values(by="count", ascending=False).head(10))
+    # Create new dataframe and display in Streamlit app
+    new_df = pd.DataFrame({'Domain': domains, 'TLD': tlds})
+    st.write(new_df)
