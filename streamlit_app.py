@@ -1,32 +1,22 @@
-import pandas as pd
 import streamlit as st
-import tldextract
-import matplotlib.pyplot as plt
+import pandas as pd
+from urllib.parse import urlparse
 
-def extract_urls(df):
-    urls = []
-    for index, row in df.iterrows():
-        urls_in_row = tldextract.extract(row[0])
-        urls.append(urls_in_row.domain + '.' + urls_in_row.suffix)
-    return urls
+def get_tld(url):
+    parsed = urlparse(url)
+    domain = parsed.netloc.split('.')[-2:]
+    return '.'.join(domain)
 
-def count_tlds(urls):
-    tlds = pd.Series(urls).value_counts()
-    return tlds
+def plot_tld_histogram(data):
+    tlds = data.apply(get_tld)
+    tld_counts = tlds.value_counts()
+    fig = px.histogram(tld_counts, x=tld_counts.index, y=tld_counts.values)
+    st.plotly_chart(fig)
 
-def display_histogram(tlds):
-    plt.bar(tlds.index, tlds.values)
-    plt.xticks(rotation=90)
-    st.pyplot()
+if __name__ == '__main__':
+    st.title('TLD Histogram App')
 
-def main():
-    st.title("URL TLD Histogram")
-    file = st.file_uploader("Upload file", type="csv")
-    if file is not None:
-        df = pd.read_csv(file)
-        urls = extract_urls(df)
-        tlds = count_tlds(urls)
-        display_histogram(tlds)
-
-if __name__ == "__main__":
-    main()
+    uploaded_file = st.file_uploader('Upload a CSV file', type='csv')
+    if uploaded_file is not None:
+        data = pd.read_csv(uploaded_file)
+        plot_tld_histogram(data)
