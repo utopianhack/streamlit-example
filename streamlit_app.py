@@ -1,15 +1,29 @@
 import streamlit as st
-import spacy
+import requests
+from bs4 import BeautifulSoup
+from wordcloud import WordCloud
+import matplotlib.pyplot as plt
 
-nlp = spacy.load('en_core_web_sm')
+def get_text(url):
+    res = requests.get(url)
+    html_page = res.content
+    soup = BeautifulSoup(html_page, 'html.parser')
+    text = soup.find_all(text=True)
+    return text
 
-def extract_organizations(text):
-    doc = nlp(text)
-    organizations = [ent.text for ent in doc.ents if ent.label_ == 'ORG']
-    return organizations
+def generate_wordcloud(text):
+    wordcloud = WordCloud(width=800, height=800,
+                          background_color='white',
+                          min_font_size=10).generate(text)
+    return wordcloud
 
-st.title('Organization Extractor')
-text = st.text_input('Enter some text')
-if text:
-    organizations = extract_organizations(text)
-    st.write('Organizations:', organizations)
+st.title('Webpage Word Cloud Generator')
+url = st.text_input('Enter the URL of the webpage you want to generate the word cloud for:')
+if st.button('Generate Word Cloud'):
+    text = get_text(url)
+    text = ' '.join([t.strip() for t in text])
+    wordcloud = generate_wordcloud(text)
+    plt.figure(figsize=(8, 8), facecolor=None)
+    plt.imshow(wordcloud)
+    plt.axis("off")
+    st.pyplot()
