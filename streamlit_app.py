@@ -23,7 +23,7 @@ def generate_wordcloud(text):
     plt.axis('off')
     st.pyplot()
 
-
+st.set_option('deprecation.showPyplotGlobalUse', False)
 st.title("Wordcloud Generator")
 
 # Create a text input box for the user to input their text
