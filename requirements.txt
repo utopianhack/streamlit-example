@@ -9,5 +9,4 @@ counter
 wordcloud
 tldextract
 hashlib
-PIL
-io
+re
