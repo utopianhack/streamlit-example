@@ -8,3 +8,4 @@ matplotlib
 collections
 counter
 wordcloud
+tldextract
