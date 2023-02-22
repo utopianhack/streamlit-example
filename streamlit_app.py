@@ -1,22 +1,28 @@
 import streamlit as st
 import pandas as pd
-from urllib.parse import urlparse
+import re
+from collections import Counter
 
-def get_tld(url):
-    parsed = urlparse(url)
-    domain = parsed.netloc.split('.')[-2:]
-    return '.'.join(domain)
+# Step 1: File upload widget
+csv_file = st.file_uploader("Upload CSV", type=["csv"])
 
-def plot_tld_histogram(data):
-    tlds = data.apply(get_tld)
-    tld_counts = tlds.value_counts()
-    fig = px.histogram(tld_counts, x=tld_counts.index, y=tld_counts.values)
-    st.plotly_chart(fig)
+if csv_file is not None:
+    # Step 2: Read CSV into a pandas DataFrame
+    df = pd.read_csv(csv_file)
 
-if __name__ == '__main__':
-    st.title('TLD Histogram App')
+    # Step 3: Extract URLs from DataFrame
+    pattern = r"(?P<url>https?://[^\s]+)"
+    urls = df["text"].str.extractall(pattern)["url"].tolist()
 
-    uploaded_file = st.file_uploader('Upload a CSV file', type='csv')
-    if uploaded_file is not None:
-        data = pd.read_csv(uploaded_file)
-        plot_tld_histogram(data)
+    # Step 4: Count TLD occurrences
+    tlds = [re.search(r"(?<=\.)\w+$", url).group(0) for url in urls]
+    tld_counts = Counter(tlds)
+
+    # Step 5: Display URLs in a Streamlit DataFrame
+    st.write("Extracted URLs:")
+    st.dataframe(pd.DataFrame(urls, columns=["URL"]))
+
+    # Step 6: Display histogram of most common TLDs
+    st.write("Most common TLDs:")
+    tld_counts_df = pd.DataFrame.from_dict(tld_counts, orient="index", columns=["count"])
+    st.bar_chart(tld_counts_df.sort_values(by="count", ascending=False).head(10))
