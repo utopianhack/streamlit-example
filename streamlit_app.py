@@ -1,26 +1,22 @@
 import streamlit as st
-import requests
-import hashlib
-from PIL import Image
-from io import BytesIO
+import re
 
-def get_favicon_hash(url):
-    try:
-        # fetch the favicon
-        response = requests.get(f"{url}/favicon.ico")
-        img = Image.open(BytesIO(response.content))
-        # calculate the MD5 hash value
-        md5 = hashlib.md5()
-        md5.update(response.content)
-        return md5.hexdigest()
-    except:
-        st.write("Error: Could not fetch favicon from the provided URL")
-        return None
+def extract_domain(text):
+    pattern = r"(?i)\b((?:[a-z][\w-]+:(?:/{1,3}|[a-z0-9%])|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}/)(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{};:'\".,<>?«»“”‘’]))"
+    domain_list = re.findall(pattern, text)
+    return [domain[0] for domain in domain_list]
 
-st.title("Calculate Hash of Favicon")
-url = st.text_input("Enter the URL")
+def main():
+    st.title("Extract Domain Names from Text")
+    input_text = st.text_input("Enter Text:")
+    if input_text:
+        domain_list = extract_domain(input_text)
+        if domain_list:
+            st.write("Domain Names:")
+            for domain in domain_list:
+                st.write(domain)
+        else:
+            st.write("No domain names found in the text")
 
-if url:
-    favicon_hash = get_favicon_hash(url)
-    if favicon_hash:
-        st.write(f"The MD5 hash value of the favicon at {url} is {favicon_hash}")
+if __name__ == '__main__':
+    main()
