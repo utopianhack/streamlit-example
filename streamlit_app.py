@@ -7,7 +7,7 @@ def extract_tld(url):
     return extracted.suffix
 
 def main():
-    st.title("Most Frequent TLDs")
+    st.title("Jonathan's Greatest App Stolen From ChatGPT")
     st.write("Enter a list of URLs to see the most frequent TLDs.")
 
     # Get the list of URLs from the user
