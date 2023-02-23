@@ -1,16 +1,29 @@
 import streamlit as st
+import pandas as pd
 import tldextract
 
-st.title('URL Domain and TLD Extractor')
+def extract_tld(url):
+    extracted = tldextract.extract(url)
+    return extracted.suffix
 
-url = st.text_input('Enter a URL:')
+def main():
+    st.title("Most Frequent TLDs")
+    st.write("Enter a list of URLs to see the most frequent TLDs.")
 
-if url:
-    extracted_url = tldextract.extract(url)
-    domain = extracted_url.domain
-    tld = extracted_url.suffix
-    st.write(f'Domain: {domain}')
-    st.write(f'TLD: {tld}')
+    # Get the list of URLs from the user
+    input_urls = st.text_area("Enter URLs, one per line")
 
-if __name__ == '__main__':
-    st.run_app()
+    # Convert the input URLs to a list
+    urls = input_urls.split("\n")
+
+    # Extract the TLDs from the URLs
+    tlds = [extract_tld(url) for url in urls]
+
+    # Count the frequencies of each TLD
+    tld_counts = pd.Series(tlds).value_counts()
+
+    # Display the histogram of the most frequent TLDs
+    st.bar_chart(tld_counts.head(10))
+
+if __name__ == "__main__":
+    main()
