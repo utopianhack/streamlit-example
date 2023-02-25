@@ -7,4 +7,3 @@ matplotlib
 wordcloud
 tldextract
 spacy
-collections
