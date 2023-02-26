@@ -16,3 +16,15 @@ fig = px.histogram(product_counts.head(10), x="product", y="counts", title="Most
 
 # Display the histogram using Streamlit
 st.plotly_chart(fig)
+
+# Group the data by vendorProject_counts and count the occurrences
+vendorProject_counts = df.groupby("vendorProject").size().reset_index(name="counts")
+
+# Sort the vendorProject_counts by counts in descending order
+vendorProject_counts = vendorProject_counts.sort_values("counts", ascending=False)
+
+# Create a histogram using Plotly Express
+fig = px.histogram(vendorProject_counts.head(10), x="vendorProject", y="counts", title="Most Frequent Vendor")
+
+# Display the histogram using Streamlit
+st.plotly_chart(fig)
