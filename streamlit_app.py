@@ -7,6 +7,8 @@ df = pd.read_csv("https://www.cisa.gov/sites/default/files/csv/known_exploited_v
 
 # Add a sidebar
 st.sidebar.title("Select Plot Type")
+st.title("CISA KEV Explore")
+st.image("https://upload.wikimedia.org/wikipedia/commons/1/1f/CISA_Logo.png")
 
 # Add a dropdown menu to select the column
 column = st.sidebar.selectbox("Select Column", df.columns)
