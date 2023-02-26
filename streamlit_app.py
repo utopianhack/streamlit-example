@@ -6,22 +6,27 @@ import plotly.express as px
 df = pd.read_csv("https://www.cisa.gov/sites/default/files/csv/known_exploited_vulnerabilities.csv")
 
 # Add a sidebar
-st.sidebar.title("Select Plot Type")
+st.sidebar.title("Select options")
 
 # Add a dropdown menu to select the column
-column = st.sidebar.selectbox("Select Column", df.columns)
+column = st.sidebar.selectbox("Select a column", df.columns)
 
 # Add a dropdown menu to select the plot type
-plot_type = st.sidebar.selectbox("Select Plot Type", ["Bar Chart", "Pie Chart"])
+plot_type = st.sidebar.selectbox(
+    "Select a plot type",
+    {
+        "Bar Chart": px.bar,
+        "Pie Chart": px.pie,
+        "DataFrame": st.write,
+    },
+)
 
 # Count the frequency of the selected column
 counts = df[column].value_counts()
 
 # Create a chart based on the user's selection
-if plot_type == "Bar Chart":
-    fig = px.bar(x=counts.index, y=counts.values)
+if plot_type == "DataFrame":
+    plot_type(counts)
 else:
-    fig = px.pie(names=counts.index, values=counts.values)
-
-# Display the chart using Streamlit
-st.plotly_chart(fig)
+    fig = plot_type(x=counts.index, y=counts.values)
+    st.plotly_chart(fig)
