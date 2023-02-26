@@ -34,7 +34,16 @@ most_recent = df["dateAdded"].max()
 
 # Display the date using st.metric
 st.metric("Last Update", most_recent)
-    
+
+# Select the most frequent value in the product column
+most_frequent_product = df["product"].value_counts().index[0]
+
+# Select the frequency of the most frequent value
+frequency = df["product"].value_counts().max()
+
+# Display the value and frequency using st.metric
+st.metric("Product With Most CISA KEV CVEs", most_frequent_product, f"{frequency} occurrences")
+
 # Display the chart using Streamlit
 st.plotly_chart(fig)
 st.dataframe(df)
