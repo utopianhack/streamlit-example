@@ -35,7 +35,8 @@ plot_type = st.sidebar.selectbox(
 )
 
 # Count the frequency of the selected column for the top 10 values
-counts = df[column].value_counts().head(10)
+counts_10 = df[column].value_counts().head(10)
+counts = df[column].value_counts()
 
 # Create a chart based on the user's selection
 if plot_type == "Line Chart":
@@ -45,7 +46,7 @@ if plot_type == "Bar Chart":
     fig = px.bar(x=counts.index, y=counts.values)
     
 if plot_type == "Pie Chart":
-    fig = px.pie(names=counts.index, values=counts.values)
+    fig = px.pie(names=counts_10.index, values=counts_10.values)
     
 elif plot_type == "Word Cloud":
     # Create a wordcloud from the vulnerabilityName column
