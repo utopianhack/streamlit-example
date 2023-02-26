@@ -28,6 +28,12 @@ num_cves = df.shape[0]
 
 # Display the count using st.metric
 st.metric("Number of CVEs", num_cves)    
+
+# Select the most recent dateAdded
+most_recent = df["dateAdded"].max()
+
+# Display the date using st.metric
+st.metric("Last Update", most_recent)
     
 # Display the chart using Streamlit
 st.plotly_chart(fig)
