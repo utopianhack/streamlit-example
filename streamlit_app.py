@@ -29,7 +29,7 @@ plot_type = st.sidebar.selectbox(
     {
         "Bar Chart": px.bar,
         "Pie Chart": px.pie,
-        "DataFrame": st.write,
+        "Line Chart": px.line,
         "Word Cloud": st.image,
     },
 )
@@ -38,8 +38,8 @@ plot_type = st.sidebar.selectbox(
 counts = df[column].value_counts().head(10)
 
 # Create a chart based on the user's selection
-if plot_type == "DataFrame":
-    plot_type(counts)
+if plot_type == "Line Chart":
+    fig = px.line(x=counts.index, y=counts.values)
     
 if plot_type == "Bar Chart":
     fig = px.bar(x=counts.index, y=counts.values)
