@@ -29,7 +29,7 @@ plot_type = st.sidebar.selectbox(
     {
         "Bar Chart": px.bar,
         "Pie Chart": px.pie,
-        "Line Chart": px.line,
+        "Tree Map": px.treemap,
         "Word Cloud": st.image,
     },
 )
@@ -39,21 +39,15 @@ counts_10 = df[column].value_counts().head(10)
 counts = df[column].value_counts()
 
 # Create a chart based on the user's selection
-if plot_type == "Line Chart":
-    fig = px.line(x=counts.index, y=counts.values)
-    
-if plot_type == "Bar Chart":
-    fig = px.bar(x=counts.index, y=counts.values)
-    
-if plot_type == "Pie Chart":
-    fig = px.pie(names=counts_10.index, values=counts_10.values)
-    
-elif plot_type == "Word Cloud":
+if plot_type == "Word Cloud":
     # Create a wordcloud from the vulnerabilityName column
-    text = " ".join(df[column].fillna(""))
+    text = " ".join(df["vulnerabilityName"].fillna(""))
     wordcloud = WordCloud(width=800, height=400).generate(text)
     # Display the wordcloud as an image
     st.image(wordcloud.to_array(), use_column_width=True)
+else:
+    fig = plot_type(df, path=[column], values="ID", color="ID")
+    st.plotly_chart(fig)
 
 # Count the number of CVEs on the list
 num_cves = df.shape[0]
