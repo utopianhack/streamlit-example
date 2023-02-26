@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 import plotly.express as px
+from datetime import datetime, timedelta
 
 # Load the CSV file
 df = pd.read_csv("https://www.cisa.gov/sites/default/files/csv/known_exploited_vulnerabilities.csv")
@@ -36,11 +37,21 @@ else:
 # Count the number of CVEs on the list
 num_cves = df.shape[0]
 
+# Count the number of unique products
+num_products = df["product"].nunique()
+
+# Count the number of unique vendors
+num_vendors = df["vendorProject"].nunique()
+
 # Select the most recent dateAdded
 most_recent = df["dateAdded"].max()
 
 # Count the number of CVEs added on the date of most_recent
 num_added_on_most_recent = df[df["dateAdded"] == most_recent].shape[0]
+
+# Count the number of CVEs added in the last 30 days
+last_30_days = datetime.now() - timedelta(days=30)
+num_added_last_30_days = df[df["dateAdded"] > last_30_days].shape[0]
 
 # Select the most frequent value in the product column
 most_frequent_product = df["product"].value_counts().index[0]
@@ -49,17 +60,20 @@ most_frequent_product = df["product"].value_counts().index[0]
 frequency = df["product"].value_counts().max()
 
 # Divide the app into three equal-width columns
-col1, col2, col3 = st.columns(3)
+col1, col2, col3, col4 = st.columns(4)
 
 # Display the metrics in separate columns
 with col1:
-    st.metric("Number of CVEs", num_cves)
-
-with col2:
     st.metric("Last Update", most_recent, f"{num_added_on_most_recent} CVEs Added")
 
-with col3:
+with col2:
     st.metric("Product With Most CISA KEV CVEs", most_frequent_product, f"{frequency} CVEs")
+
+with col3:
+    st.metric("Number of Products", num_products, f"From {num_vendors} Vendors)    
+    
+with col4:
+    st.metric("Number of CVEs", num_cves, f"{num_added_last_30_days} Added Last 30 Days)
 
 # Display the chart using Streamlit
 st.plotly_chart(fig)
