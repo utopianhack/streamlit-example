@@ -49,13 +49,6 @@ most_recent = df["dateAdded"].max()
 # Count the number of CVEs added on the date of most_recent
 num_added_on_most_recent = df[df["dateAdded"] == most_recent].shape[0]
 
-# Calculate the date range for the last 30 days
-end_date = pd.Timestamp.today()
-start_date = end_date - pd.Timedelta(days=30)
-
-# Count the number of CVEs added in the last 30 days
-num_added_last_30_days = df[(df["dateAdded"] >= start_date) & (df["dateAdded"] <= end_date)].shape[0]
-
 # Select the most frequent value in the product column
 most_frequent_product = df["product"].value_counts().index[0]
 
@@ -76,7 +69,7 @@ with col3:
     st.metric("Number of Products", num_products, f"From {num_vendors} Vendors")    
     
 with col4:
-    st.metric("Number of CVEs", num_cves, f"{num_added_last_30_days} Added Last 30 Days")
+    st.metric("Number of CVEs", num_cves)
 
 # Display the chart using Streamlit
 st.plotly_chart(fig)
