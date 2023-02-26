@@ -49,12 +49,6 @@ else:
     fig = plot_type(x=counts.index, y=counts.values)
     st.plotly_chart(fig)
 
-# Create a chart based on the user's selection
-if plot_type == "Bar Chart":
-    fig = px.bar(x=counts.index, y=counts.values)
-else:
-    fig = px.pie(names=counts.index, values=counts.values)
-
 # Count the number of CVEs on the list
 num_cves = df.shape[0]
 
