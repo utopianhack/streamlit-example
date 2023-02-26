@@ -51,7 +51,7 @@ num_added_on_most_recent = df[df["dateAdded"] == most_recent].shape[0]
 
 # Count the number of CVEs added in the last 30 days
 last_30_days = datetime.now() - timedelta(days=30)
-num_added_last_30_days = df[df["dateAdded"] > last_30_days].shape[0]
+num_added_last_30_days = df[(df["dateAdded"] >= start_date) & (df["dateAdded"] <= end_date)].shape[0]
 
 # Select the most frequent value in the product column
 most_frequent_product = df["product"].value_counts().index[0]
