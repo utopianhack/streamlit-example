@@ -26,14 +26,8 @@ else:
 # Count the number of CVEs on the list
 num_cves = df.shape[0]
 
-# Display the count using st.metric
-st.metric("Number of CVEs", num_cves)    
-
 # Select the most recent dateAdded
 most_recent = df["dateAdded"].max()
-
-# Display the date using st.metric
-st.metric("Last Update", most_recent)
 
 # Select the most frequent value in the product column
 most_frequent_product = df["product"].value_counts().index[0]
@@ -41,8 +35,18 @@ most_frequent_product = df["product"].value_counts().index[0]
 # Select the frequency of the most frequent value
 frequency = df["product"].value_counts().max()
 
-# Display the value and frequency using st.metric
-st.metric("Product With Most CISA KEV CVEs", most_frequent_product, f"{frequency} occurrences")
+# Divide the app into three equal-width columns
+col1, col2, col3 = st.columns(3)
+
+# Display the metrics in separate columns
+with col1:
+    st.metric("Number of CVEs", num_cves)
+
+with col2:
+    st.metric("Last Update", most_recent)
+
+with col3:
+    st.metric("Product With Most CISA KEV CVEs", most_frequent_product, f"{frequency} occurrences")
 
 # Display the chart using Streamlit
 st.plotly_chart(fig)
