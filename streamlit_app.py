@@ -23,10 +23,31 @@ with col2:
 column = st.sidebar.selectbox("Select Column", df.columns)
 
 # Add a dropdown menu to select the plot type
-plot_type = st.sidebar.selectbox("Select Plot Type", ["Bar Chart", "Pie Chart"])
+plot_type = st.sidebar.selectbox(
+    "Select a plot type",
+    {
+        "Bar Chart": px.bar,
+        "Pie Chart": px.pie,
+        "DataFrame": st.write,
+        "Word Cloud": st.image,
+    },
+)
 
-# Count the frequency of the selected column
+# Count the frequency of the selected column for the top 10 values
 counts = df[column].value_counts().head(10)
+
+# Create a chart based on the user's selection
+if plot_type == "DataFrame":
+    plot_type(counts)
+elif plot_type == "Word Cloud":
+    # Create a wordcloud from the vulnerabilityName column
+    text = " ".join(df["vulnerabilityName"].fillna(""))
+    wordcloud = WordCloud(width=800, height=400).generate(text)
+    # Display the wordcloud as an image
+    st.image(wordcloud.to_array(), use_column_width=True)
+else:
+    fig = plot_type(x=counts.index, y=counts.values)
+    st.plotly_chart(fig)
 
 # Create a chart based on the user's selection
 if plot_type == "Bar Chart":
