@@ -23,14 +23,6 @@ with col2:
 # Add a dropdown menu to select the column
 column = st.sidebar.selectbox("Select Column", df.columns)
 
-# Add date range selection to sidebar
-start_date = st.sidebar.date_input('Start date', min_value=df['dateAdded'].min(), max_value=df['dateAdded'].max(), value=df['dateAdded'].min())
-end_date = st.sidebar.date_input('End date', min_value=df['dateAdded'].min(), max_value=df['dateAdded'].max(), value=df['dateAdded'].max())
-
-# Filter data by date range
-filtered_data = df[(df['dateAdded'] >= start_date) & (df['dateAdded'] <= end_date)]
-
-
 # Add a dropdown menu to select the plot type
 plot_type = st.sidebar.selectbox(
     "Select a plot type",
@@ -43,8 +35,8 @@ plot_type = st.sidebar.selectbox(
 )
 
 # Count the frequency of the selected column for the top 10 values
-counts_10 = filtered_data[column].value_counts().head(10)
-counts = filtered_data[column].value_counts()
+counts_10 = df[column].value_counts().head(10)
+counts = df[column].value_counts()
 
 # Create a chart based on the user's selection
 if plot_type == "Line Chart":
@@ -64,28 +56,28 @@ elif plot_type == "Word Cloud":
     st.image(wordcloud.to_array(), use_column_width=True)
 
 # Count the number of CVEs on the list
-num_cves = filtered_data.shape[0]
+num_cves = df.shape[0]
 
 # Count the number of unique products
-num_products = filtered_data["product"].nunique()
+num_products = df["product"].nunique()
 
 # Count the number of unique vendors
-num_vendors = filtered_data["vendorProject"].nunique()
+num_vendors = df["vendorProject"].nunique()
 
 # Select the most recent dateAdded
-most_recent = filtered_data["dateAdded"].max()
+most_recent = df["dateAdded"].max()
 
 # Count the number of CVEs added on the date of most_recent
-num_added_on_most_recent = filtered_data[filtered_data["dateAdded"] == most_recent].shape[0]
+num_added_on_most_recent = df[df["dateAdded"] == most_recent].shape[0]
 
 # Select the CVEs added on date of most_recent
-most_recent_cves = filtered_data[filtered_data['dateAdded'] == most_recent]['cveID']
+most_recent_cves = df[df['dateAdded'] == most_recent]['cveID']
 
 # Select the most frequent value in the product column
-most_frequent_product = filtered_data["product"].value_counts().index[0]
+most_frequent_product = df["product"].value_counts().index[0]
 
 # Select the frequency of the most frequent value
-frequency = filtered_data["product"].value_counts().max()
+frequency = df["product"].value_counts().max()
 
 # Divide the app into three equal-width columns
 col1, col2, col3, col4 = st.columns(4)
@@ -105,4 +97,4 @@ with col4:
 
 # Display the chart using Streamlit
 st.plotly_chart(fig)
-st.dataframe(filtered_data)
+st.dataframe(df)
