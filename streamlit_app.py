@@ -39,15 +39,19 @@ counts = df[column].value_counts().head(10)
 # Create a chart based on the user's selection
 if plot_type == "DataFrame":
     plot_type(counts)
+    
+if plot_type == "Bar Chart":
+    fig = px.bar(x=counts.index, y=counts.values)
+    
+if plot_type == "Pie Chart":
+    fig = px.pie(names=counts.index, values=counts.values)
+    
 elif plot_type == "Word Cloud":
     # Create a wordcloud from the vulnerabilityName column
     text = " ".join(df["vulnerabilityName"].fillna(""))
     wordcloud = WordCloud(width=800, height=400).generate(text)
     # Display the wordcloud as an image
     st.image(wordcloud.to_array(), use_column_width=True)
-else:
-    fig = plot_type(x=counts.index, y=counts.values)
-    st.plotly_chart(fig)
 
 # Count the number of CVEs on the list
 num_cves = df.shape[0]
