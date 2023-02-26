@@ -7,7 +7,7 @@ df = pd.read_csv("https://www.cisa.gov/sites/default/files/csv/known_exploited_v
 
 # Add a sidebar
 st.sidebar.title("Select Plot Type")
-st.image("https://upload.wikimedia.org/wikipedia/commons/1/1f/CISA_Logo.png", width=10)
+st.image("https://upload.wikimedia.org/wikipedia/commons/1/1f/CISA_Logo.png", width=100)
 st.title("CISA KEV Explore")
 
 
