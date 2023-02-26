@@ -5,26 +5,23 @@ import plotly.express as px
 # Load the CSV file
 df = pd.read_csv("https://www.cisa.gov/sites/default/files/csv/known_exploited_vulnerabilities.csv")
 
-# Group the data by product and count the occurrences
-product_counts = df.groupby("product").size().reset_index(name="counts")
+# Add a sidebar
+st.sidebar.title("Select Plot Type")
 
-# Sort the products by counts in descending order
-product_counts = product_counts.sort_values("counts", ascending=False)
+# Add a dropdown menu to select the column
+column = st.sidebar.selectbox("Select Column", df.columns)
 
-# Create a histogram using Plotly Express
-fig = px.histogram(product_counts.head(10), x="product", y="counts", title="Most Frequent Products")
+# Add a dropdown menu to select the plot type
+plot_type = st.sidebar.selectbox("Select Plot Type", ["Bar Chart", "Pie Chart"])
 
-# Display the histogram using Streamlit
-st.plotly_chart(fig)
+# Count the frequency of the selected column
+counts = df[column].value_counts()
 
-# Group the data by vendorProject_counts and count the occurrences
-vendorProject_counts = df.groupby("vendorProject").size().reset_index(name="counts")
+# Create a chart based on the user's selection
+if plot_type == "Bar Chart":
+    fig = px.bar(x=counts.index, y=counts.values)
+else:
+    fig = px.pie(names=counts.index, values=counts.values)
 
-# Sort the vendorProject_counts by counts in descending order
-vendorProject_counts = vendorProject_counts.sort_values("counts", ascending=False)
-
-# Create a histogram using Plotly Express
-fig = px.histogram(vendorProject_counts.head(10), x="vendorProject", y="counts", title="Most Frequent Vendor")
-
-# Display the histogram using Streamlit
+# Display the chart using Streamlit
 st.plotly_chart(fig)
