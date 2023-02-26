@@ -5,6 +5,8 @@ import plotly.express as px
 # Load the CSV file
 df = pd.read_csv("https://www.cisa.gov/sites/default/files/csv/known_exploited_vulnerabilities.csv")
 
+st.set_page_config(layout="wide")
+
 # Add a sidebar
 st.sidebar.title("Select Plot Type")
 
