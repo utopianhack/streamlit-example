@@ -25,4 +25,4 @@ else:
 
 # Display the chart using Streamlit
 st.plotly_chart(fig)
-st.dataframe(df.[str(column)])
+st.dataframe(df.[column])
