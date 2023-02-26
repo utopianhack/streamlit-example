@@ -71,7 +71,7 @@ most_recent = df["dateAdded"].max()
 num_added_on_most_recent = df[df["dateAdded"] == most_recent].shape[0]
 
 # Select the CVEs added on date of most_recent
-most_recent_cves = df[df['dateAdded'] == most_recent]['cveID']
+most_recent_cves = df[df['dateAdded'] == most_recent]['cveID'].tolist()
 
 # Select the most frequent value in the product column
 most_frequent_product = df["product"].value_counts().index[0]
