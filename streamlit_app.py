@@ -73,7 +73,7 @@ with col3:
     st.metric("Number of Products", num_products, f"From {num_vendors} Vendors")    
     
 with col4:
-    st.metric("Number of CVEs", num_cves, f"{num_added_last_30_days} Added Last 30 Days)
+    st.metric("Number of CVEs", num_cves, f"{num_added_last_30_days} Added Last 30 Days")
 
 # Display the chart using Streamlit
 st.plotly_chart(fig)
