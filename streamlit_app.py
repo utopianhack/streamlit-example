@@ -15,7 +15,7 @@ column = st.sidebar.selectbox("Select Column", df.columns)
 plot_type = st.sidebar.selectbox("Select Plot Type", ["Bar Chart", "Pie Chart"])
 
 # Count the frequency of the selected column
-counts = df[column].value_counts()
+counts = df[column].value_counts().head(10)
 
 # Create a chart based on the user's selection
 if plot_type == "Bar Chart":
