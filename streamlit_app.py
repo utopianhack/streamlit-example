@@ -23,6 +23,12 @@ if plot_type == "Bar Chart":
 else:
     fig = px.pie(names=counts.index, values=counts.values)
 
+# Count the number of CVEs on the list
+num_cves = df.shape[0]
+
+# Display the count using st.metric
+st.metric("Number of CVEs", num_cves)    
+    
 # Display the chart using Streamlit
 st.plotly_chart(fig)
 st.dataframe(df)
