@@ -14,7 +14,7 @@ with col1:
     st.image("https://upload.wikimedia.org/wikipedia/commons/1/1f/CISA_Logo.png", width=100)
     
 with col2:
-    st.title("CISA KEV Explore")
+    st.title("CISA KEV Explorer")
     
 # Add a dropdown menu to select the column
 column = st.sidebar.selectbox("Select Column", df.columns)
