@@ -49,7 +49,7 @@ if plot_type == "Pie Chart":
     
 elif plot_type == "Word Cloud":
     # Create a wordcloud from the vulnerabilityName column
-    text = " ".join(df["vulnerabilityName"].fillna(""))
+    text = " ".join(df[column].fillna(""))
     wordcloud = WordCloud(width=800, height=400).generate(text)
     # Display the wordcloud as an image
     st.image(wordcloud.to_array(), use_column_width=True)
