@@ -46,7 +46,7 @@ if plot_type == "Word Cloud":
     # Display the wordcloud as an image
     st.image(wordcloud.to_array(), use_column_width=True)
 else:
-    fig = plot_type(df, path=[column], values="ID", color="ID")
+    fig = plot_type(df, path=[column], values=counts.values)
     st.plotly_chart(fig)
 
 # Count the number of CVEs on the list
