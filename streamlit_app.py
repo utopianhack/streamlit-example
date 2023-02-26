@@ -70,7 +70,7 @@ with col2:
     st.metric("Product With Most CISA KEV CVEs", most_frequent_product, f"{frequency} CVEs")
 
 with col3:
-    st.metric("Number of Products", num_products, f"From {num_vendors} Vendors)    
+    st.metric("Number of Products", num_products, f"From {num_vendors} Vendors")    
     
 with col4:
     st.metric("Number of CVEs", num_cves, f"{num_added_last_30_days} Added Last 30 Days)
