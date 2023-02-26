@@ -12,7 +12,7 @@ product_counts = df.groupby("product").size().reset_index(name="Counts")
 product_counts = product_counts.sort_values("Counts", ascending=False)
 
 # Create a histogram using Plotly Express
-fig = px.histogram(product_counts.head(10), x="Product", y="Counts", title="Most Frequent Products")
+fig = px.histogram(product_counts.head(10), x="product", y="counts", title="Most Frequent Products")
 
 # Display the histogram using Streamlit
 st.plotly_chart(fig)
