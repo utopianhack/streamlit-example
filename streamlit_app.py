@@ -2,8 +2,8 @@ import streamlit as st
 import re
 
 def highlight_cves(text):
-    cve_pattern = r'CVE-\d{4}-\d{4,7}'  # regular expression pattern for CVEs
-    highlighted_text = re.sub(cve_pattern, r'<mark>\g<0></mark>', text)
+    cve_pattern = r'CVE-\d{4}-\d{4,7}'
+    highlighted_text = re.sub(cve_pattern, r'<mark style="background-color: yellow;">\g<0></mark>', text)
     return highlighted_text
 
 st.title('CVE Highlighter')
