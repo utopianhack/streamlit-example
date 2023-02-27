@@ -13,6 +13,8 @@ if submit_button:
     if response.status_code == 200:
         json_response = response.json()
         cvss_score = json_response["result"]["CVE_Items"][0]["impact"]["baseMetricV3"]["cvssV3"]["baseScore"]
+        published_date = json_response["result"]["CVE_Items"][0]["publishedDate"]
         st.write(f"The CVSS score for {cve_input} is {cvss_score}")
+        st.write(f"Published date: {published_date}")
     else:
         st.write(f"Error retrieving CVSS score for {cve_input}")
