@@ -16,7 +16,7 @@ col1, col2 = st.columns(2)
 
 # Display the metrics in separate columns
 with col1:
-    st.image("https://upload.wikimedia.org/wikipedia/commons/1/1f/CISA_Logo.png", width=200)  
+    st.image("https://upload.wikimedia.org/wikipedia/commons/1/1f/CISA_Logo.png", width=100)  
 with col2:
     st.title("CISA KEV Explorer")
     
