@@ -3,9 +3,9 @@ import requests
 
 st.title("CVE Lookup")
 
-with st.form("cve_lookup"):
-    cve_input = st.text_input("Enter CVE")
-    submit_button = st.form_submit_button(label="Lookup")
+st.form("cve_lookup"):
+cve_input = st.text_input("Enter CVE")
+submit_button = st.form_submit_button(label="Lookup")
 
 if submit_button:
     url = f"https://services.nvd.nist.gov/rest/json/cve/1.0/{cve_input}"
