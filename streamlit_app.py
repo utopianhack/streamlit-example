@@ -1,15 +1,46 @@
-import streamlit as st
+import pandas as pd
 import re
+import streamlit as st
 
-def highlight_cves(text):
-    cve_pattern = r'CVE-\d{4}-\d{4,7}'
-    highlighted_text = re.sub(cve_pattern, r'<mark style="background-color: yellow;">\g<0></mark>', text)
-    return highlighted_text
+def highlight_iocs(text):
+    email_regex = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b'
+    ip_regex = r'\b(?:\d{1,3}\.){3}\d{1,3}\b'
+    domain_regex = r'\b(?:https?://)?(?:www\.)?([A-Za-z0-9.-]+)\.[A-Z|a-z]{2,}\b'
 
-st.title('CVE Highlighter')
+    domain_matches = re.findall(domain_regex, text)
+    email_matches = re.findall(email_regex, text)
+    ip_matches = re.findall(ip_regex, text)
+    
+    for match in email_matches:
+        text = text.replace(match, f'<span style="background-color: #ffff00">{match}</span>')
+        
+    for match in ip_matches:
+        text = text.replace(match, f'<span style="background-color: #ff00ff">{match}</span>')
+        
+    for match in domain_matches:
+        text = text.replace(match, f'<span style="background-color: #00ffff">{match}</span>')
+        
+    return text
 
-text = st.text_area('Enter text', '')
+def main():
+    st.title('IOC Highlighter')
+    input_text = st.text_area('Enter text:', height=200)
+    
+    if input_text:
+        output_text = highlight_iocs(input_text)
+        st.markdown(output_text, unsafe_allow_html=True)
+        
+        email_regex = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b'
+        ip_regex = r'\b(?:\d{1,3}\.){3}\d{1,3}\b'
+        
+        email_matches = re.findall(email_regex, input_text)
+        ip_matches = re.findall(ip_regex, input_text)
+        
+        data = {'IOC': email_matches + ip_matches}
+        df = pd.DataFrame(data)
+        st.write(df)
+        
+if __name__ == '__main__':
+    main()
 
-if st.button('Highlight CVEs'):
-    highlighted_text = highlight_cves(text)
-    st.markdown(highlighted_text, unsafe_allow_html=True)
+    
