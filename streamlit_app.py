@@ -1,11 +1,26 @@
 import streamlit as st
-import whois
+from nvdlib.nvd import NVD
+from pycvesearch import CVESearch
 
-st.title('Domain Name Lookup')
+st.title("CVE Information App")
 
-domain_name = st.text_input('Enter a domain name:')
+cve_id = st.text_input("Enter the CVE ID")
 
-if domain_name:
-    st.write(f'Information for domain: {domain_name}')
-    domain_info = whois.whois(domain_name)
-    st.write(domain_info)
+if cve_id:
+    nvd = NVD()
+    cve = nvd.cve(cve_id)
+    if cve:
+        st.write("### Description")
+        st.write(cve.description)
+        st.write("### CVSS Score")
+        st.write(cve.cvss_score)
+    else:
+        st.write("CVE not found in NVD")
+
+    cve_search = CVESearch()
+    cve_info = cve_search.id(cve_id)
+    if cve_info:
+        st.write("### References")
+        st.write(cve_info.get("references", ""))
+    else:
+        st.write("CVE not found in CVE Search")
