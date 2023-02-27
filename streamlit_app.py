@@ -1,20 +1,22 @@
 import streamlit as st
-import requests
+import pandas as pd
+from urllib.parse import urlparse
 
-st.title("CVE Lookup")
+def get_tld(url):
+    parsed = urlparse(url)
+    domain = parsed.netloc.split('.')[-2:]
+    return '.'.join(domain)
 
-st.form("cve_lookup"):
-cve_input = st.text_input("Enter CVE")
-submit_button = st.form_submit_button(label="Lookup")
+def plot_tld_histogram(data):
+    tlds = data.apply(get_tld)
+    tld_counts = tlds.value_counts()
+    fig = px.histogram(tld_counts, x=tld_counts.index, y=tld_counts.values)
+    st.plotly_chart(fig)
 
-if submit_button:
-    url = f"https://services.nvd.nist.gov/rest/json/cve/1.0/{cve_input}"
-    response = requests.get(url)
-    if response.status_code == 200:
-        json_response = response.json()
-        cvss_score = json_response["result"]["CVE_Items"][0]["impact"]["baseMetricV3"]["cvssV3"]["baseScore"]
-        published_date = json_response["result"]["CVE_Items"][0]["publishedDate"]
-        st.write(f"The CVSS score for {cve_input} is {cvss_score}")
-        st.write(f"Published date: {published_date}")
-    else:
-        st.write(f"Error retrieving CVSS score for {cve_input}")
+if __name__ == '__main__':
+    st.title('TLD Histogram App')
+
+    uploaded_file = st.file_uploader('Upload a CSV file', type='csv')
+    if uploaded_file is not None:
+        data = pd.read_csv(uploaded_file)
+        plot_tld_histogram(data)
