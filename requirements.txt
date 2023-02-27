@@ -7,7 +7,6 @@ matplotlib
 wordcloud
 tldextract
 spacy
-spacy_streamlit
 plotly
 datetime
 
