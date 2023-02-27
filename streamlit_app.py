@@ -1,22 +1,20 @@
-import streamlit as st
 import pandas as pd
-from urllib.parse import urlparse
+import streamlit as st
+import squarify
+import matplotlib.pyplot as plt
 
-def get_tld(url):
-    parsed = urlparse(url)
-    domain = parsed.netloc.split('.')[-2:]
-    return '.'.join(domain)
+url = 'https://www2.census.gov/programs-surveys/popest/datasets/2010-2019/state/totals/nst-est2019-alldata.csv'
+df = pd.read_csv(url, encoding='latin-1')
 
-def plot_tld_histogram(data):
-    tlds = data.apply(get_tld)
-    tld_counts = tlds.value_counts()
-    fig = px.histogram(tld_counts, x=tld_counts.index, y=tld_counts.values)
-    st.plotly_chart(fig)
+df = df[df['SUMLEV']==40] # Filter out summary level rows
+df = df[['NAME', 'POPESTIMATE2019']] # Keep only the columns we need
+df = df.rename(columns={'NAME': 'State', 'POPESTIMATE2019': 'Population'}) # Rename the columns
 
-if __name__ == '__main__':
-    st.title('TLD Histogram App')
+st.title('US States by Population')
+st.write('This treemap shows the population of each US state in 2019.')
+st.write('Hover over a square to see the state name and population.')
 
-    uploaded_file = st.file_uploader('Upload a CSV file', type='csv')
-    if uploaded_file is not None:
-        data = pd.read_csv(uploaded_file)
-        plot_tld_histogram(data)
+fig, ax = plt.subplots()
+squarify.plot(sizes=df['Population'], label=df['State'], alpha=.8 )
+plt.axis('off')
+st.pyplot()
