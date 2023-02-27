@@ -9,4 +9,4 @@ tldextract
 spacy
 plotly
 datetime
-defang
+re
