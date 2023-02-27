@@ -24,10 +24,10 @@ def highlight_iocs(text):
         text = text.replace(match, f'<span style="background-color: #00ffff">{match}</span>')
         
     for match in cve_matches:
-        text = text.replace(match, f'<span style="background-color: #00ff00">{match}</span>')
+        text = text.replace(match, f'<span style="background-color: #3399ff">{match}</span>')
 
     for match in asn_matches:
-        text = text.replace(match, f'<span style="background-color: #0000ff">{match}</span>')
+        text = text.replace(match, f'<span style="background-color: #ff9933">{match}</span>')
         
     return text
 
@@ -46,8 +46,8 @@ def main():
         ip_matches = re.findall(ip_regex, input_text)
         
         
-        data = {'Type': [match[1] for match in email_matches + ip_matches + domain_matches + cve_matches + asn_matches],
-                'IOC': [match[0] for match in email_matches + ip_matches + domain_matches + cve_matches + asn_matches]}
+        data = {'Type': [match[1] for match in email_matches + ip_matches + cve_matches + asn_matches],
+                'IOC': [match[0] for match in email_matches + ip_matches + cve_matches + asn_matches]}
 
         df = pd.DataFrame(data)
         st.write(df)
