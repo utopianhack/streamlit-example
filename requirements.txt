@@ -9,5 +9,4 @@ tldextract
 spacy
 plotly
 datetime
-pycvesearch
-nvdlib
+
