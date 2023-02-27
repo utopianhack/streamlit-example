@@ -1,21 +1,18 @@
 import streamlit as st
-import re
+import requests
 
-def defang_text(text):
-    # Define regular expressions for domains, URLs, and IP addresses
-    domain_regex = r"(?<!\S)((?:[a-zA-Z0-9_-]+\.)+[a-zA-Z]{2,})(?!\S)"
-    url_regex = r"(?P<url>https?://[^\s]+)"
-    ip_regex = r"\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b"
+st.title("CVE Lookup")
 
-    # Replace matching patterns with their defanged equivalents
-    defanged_text = re.sub(domain_regex, r"\1[.]com", text)
-    defanged_text = re.sub(url_regex, r"\g<url> [.]com", defanged_text)
-    defanged_text = re.sub(ip_regex, r"[IP ADDRESS]", defanged_text)
-    return defanged_text
+with st.form("cve_lookup"):
+    cve_input = st.text_input("Enter CVE")
+    submit_button = st.form_submit_button(label="Lookup")
 
-st.title("Defang Text App")
-
-text_input = st.text_input("Enter text to defang:")
-if text_input:
-    defanged_text = defang_text(text_input)
-    st.write(defanged_text)
+if submit_button:
+    url = f"https://services.nvd.nist.gov/rest/json/cve/1.0/{cve_input}"
+    response = requests.get(url)
+    if response.status_code == 200:
+        json_response = response.json()
+        cvss_score = json_response["result"]["CVE_Items"][0]["impact"]["baseMetricV3"]["cvssV3"]["baseScore"]
+        st.write(f"The CVSS score for {cve_input} is {cvss_score}")
+    else:
+        st.write(f"Error retrieving CVSS score for {cve_input}")
