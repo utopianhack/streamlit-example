@@ -9,4 +9,3 @@ tldextract
 spacy
 plotly
 datetime
-squarify
