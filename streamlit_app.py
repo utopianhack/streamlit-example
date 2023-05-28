@@ -7,6 +7,8 @@ from wordcloud import WordCloud
 # Load the CSV file
 df = pd.read_csv("https://www.cisa.gov/sites/default/files/csv/known_exploited_vulnerabilities.csv", index_col=False)
 
+df['NVD Link'] = df['CVE'].apply(lambda cve: f"https://nvd.nist.gov/vuln/detail/{cve.strip('[]')}")
+
 df_sorted = df.sort_values('dateAdded', ascending=False)
 
 st.set_page_config(layout="wide")
@@ -70,9 +72,6 @@ num_added_on_most_recent = df[df["dateAdded"] == most_recent].shape[0]
 
 # Select the CVEs added on date of most_recent
 most_recent_cves = df[df['dateAdded'] == most_recent]['cveID'].tolist()
-most_recent_cves = most_recent_cves.strip("[]'")
-
-#most_recent_cves_details = df[df["dateAdded"] == most_recent]
 
 # Select the most frequent value in the product column
 most_frequent_product = df["product"].value_counts().index[0]
