@@ -7,6 +7,8 @@ from wordcloud import WordCloud
 # Load the CSV file
 df = pd.read_csv("https://www.cisa.gov/sites/default/files/csv/known_exploited_vulnerabilities.csv", index_col=False)
 
+df_sorted = df.sort_values('dateAdded', ascending=False)
+
 st.set_page_config(layout="wide")
 
 # Add a sidebar
@@ -96,5 +98,5 @@ with col4:
     st.metric("Number of CVEs", num_cves)
 
 # Display the chart using Streamlit
+st.dataframe(df_sorted)
 st.plotly_chart(fig)
-st.dataframe(df)
