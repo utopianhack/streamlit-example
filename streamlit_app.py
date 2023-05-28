@@ -98,5 +98,5 @@ with col4:
     st.metric("Number of CVEs", num_cves)
 
 # Display the chart using Streamlit
-st.table(df_sorted)
+st.write(df_sorted)
 st.plotly_chart(fig)
