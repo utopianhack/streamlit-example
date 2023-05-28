@@ -8,6 +8,7 @@ from wordcloud import WordCloud
 df = pd.read_csv("https://www.cisa.gov/sites/default/files/csv/known_exploited_vulnerabilities.csv", index_col=False)
 
 df_sorted = df.sort_values('dateAdded', ascending=False)
+df_sorted = df_sorted.reset_index(drop=True)
 
 st.set_page_config(layout="wide")
 
