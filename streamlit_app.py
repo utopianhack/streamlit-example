@@ -82,7 +82,7 @@ col1, col2, col3, col4 = st.columns(4)
 with col1:
     st.metric("Last Update", most_recent, f"{num_added_on_most_recent} CVEs Added")
     #st.write(most_recent_cves)
-    st.dataframe(most_recent)
+    st.write(most_recent)
 
 with col2:
     st.metric("Product With Most CISA KEV CVEs", most_frequent_product, f"{frequency} CVEs")
