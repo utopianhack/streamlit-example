@@ -3,6 +3,7 @@ import pandas as pd
 import plotly.express as px
 from datetime import datetime, timedelta
 from wordcloud import WordCloud
+import re
 
 # Load the CSV file
 df = pd.read_csv("https://www.cisa.gov/sites/default/files/csv/known_exploited_vulnerabilities.csv", index_col=False)
@@ -71,6 +72,8 @@ num_added_on_most_recent = df[df["dateAdded"] == most_recent].shape[0]
 # Select the CVEs added on date of most_recent
 most_recent_cves = df[df['dateAdded'] == most_recent]['cveID'].tolist()
 
+most_recent_cves_cleaned = re.sub(r"[\[\]']", "", most_recent_cves)
+
 # Select the most frequent value in the product column
 most_frequent_product = df["product"].value_counts().index[0]
 
@@ -84,7 +87,8 @@ col1, col2, col3, col4 = st.columns(4)
 with col1:
     st.metric("Last Update", most_recent, f"{num_added_on_most_recent} CVEs Added")
     st.write(most_recent_cves)
-    st.write(f"https://nvd.nist.gov/vuln/detail/{most_recent_cves}")
+    cve_cleaned = re.sub(r"[\[\]']", "", df["cveID"])
+    st.write(f"https://nvd.nist.gov/vuln/detail/{most_recent_cves_cleaned}")
     #st.table(most_recent_cves_details)
 
 with col2:
