@@ -1,12 +1,6 @@
 pandas
 streamlit
-beautifulsoup4
-requests
-nltk
-matplotlib
+plotly.express
 wordcloud
-tldextract
-spacy
-plotly
 datetime
 
