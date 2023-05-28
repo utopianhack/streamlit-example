@@ -26,6 +26,7 @@ plot_type = st.sidebar.selectbox(
         "Bar Chart": px.bar,
         "Pie Chart": px.pie,
         "Line Chart": px.line,
+        "Timeline": px.timeline,
         "Word Cloud": st.image,
     },
 )
@@ -40,6 +41,9 @@ if plot_type == "Line Chart":
     
 if plot_type == "Bar Chart":
     fig = px.bar(x=counts.index, y=counts.values)
+    
+if plot_type == "Timeline":
+    fig = px.timeline(x=counts.index, y=counts.values)
     
 if plot_type == "Pie Chart":
     fig = px.pie(names=counts_10.index, values=counts_10.values)
