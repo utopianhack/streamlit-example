@@ -7,6 +7,11 @@ from wordcloud import WordCloud
 # Load the CSV file
 df = pd.read_csv("https://www.cisa.gov/sites/default/files/csv/known_exploited_vulnerabilities.csv", index_col=False)
 
+def generate_nvd_link(cve):
+    return f"https://nvd.nist.gov/vuln/detail/{cve}"
+
+df['NVD Profile'] = df['CVE'].apply(generate_nvd_link)
+
 df_sorted = df.sort_values('dateAdded', ascending=False)
 
 st.set_page_config(layout="wide")
