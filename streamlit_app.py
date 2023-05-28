@@ -26,7 +26,6 @@ plot_type = st.sidebar.selectbox(
         "Bar Chart": px.bar,
         "Pie Chart": px.pie,
         "Line Chart": px.line,
-        "Timeline": px.timeline,
         "Word Cloud": st.image,
     },
 )
@@ -41,9 +40,6 @@ if plot_type == "Line Chart":
     
 if plot_type == "Bar Chart":
     fig = px.bar(x=counts.index, y=counts.values)
-    
-if plot_type == "Timeline":
-    fig = px.timeline(x=counts.index, y=counts.values)
     
 if plot_type == "Pie Chart":
     fig = px.pie(names=counts_10.index, values=counts_10.values)
@@ -71,7 +67,7 @@ most_recent = df["dateAdded"].max()
 num_added_on_most_recent = df[df["dateAdded"] == most_recent].shape[0]
 
 # Select the CVEs added on date of most_recent
-most_recent_cves = df[df['dateAdded'] == most_recent]['cveID'].tolist()
+most_recent_cves = df[df['dateAdded'] == most_recent]['cveID','product','vendorProject'].tolist()
 
 # Select the most frequent value in the product column
 most_frequent_product = df["product"].value_counts().index[0]
