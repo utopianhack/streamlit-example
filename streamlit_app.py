@@ -84,7 +84,6 @@ col1, col2, col3, col4 = st.columns(4)
 with col1:
     st.metric("Last Update", most_recent, f"{num_added_on_most_recent} CVEs Added")
     st.write(most_recent_cves)
-    st.write(f"https://nvd.nist.gov/vuln/detail/{most_recent_cves}")
     #st.table(most_recent_cves_details)
 
 with col2:
