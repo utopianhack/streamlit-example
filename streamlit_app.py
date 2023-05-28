@@ -1,55 +1,97 @@
-import re
-import pandas as pd
 import streamlit as st
+import pandas as pd
+import plotly.express as px
+from datetime import datetime, timedelta
+from wordcloud import WordCloud
 
-def highlight_iocs(text):
-    email_regex = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b'
-    ip_regex = r'\b(?:\d{1,3}\.){3}\d{1,3}\b'
-    cve_regex = r'\bCVE-\d{4}-\d{4,7}\b'
-    asn_regex = r'\bAS\d+\b'
+# Load the CSV file
+df = pd.read_csv("https://www.cisa.gov/sites/default/files/csv/known_exploited_vulnerabilities.csv", index_col=False)
+
+st.set_page_config(layout="wide")
+
+# Add a sidebar
+st.sidebar.image("https://upload.wikimedia.org/wikipedia/commons/1/1f/CISA_Logo.png", width=200)
+st.sidebar.title("Select Plot Type")
+
+# Add a title
+st.title("CISA Known Exploited Vulnerabilities Explorer")
     
-    email_matches = re.findall(email_regex, text)
-    ip_matches = re.findall(ip_regex, text)
-    cve_matches = re.findall(cve_regex, text)
-    asn_matches = re.findall(asn_regex, text)
+# Add a dropdown menu to select the column
+column = st.sidebar.selectbox("Select Column", df.columns)
+
+# Add a dropdown menu to select the plot type
+plot_type = st.sidebar.selectbox(
+    "Select a plot type",
+    {
+        "Bar Chart": px.bar,
+        "Pie Chart": px.pie,
+        "Line Chart": px.line,
+        "Word Cloud": st.image,
+    },
+)
+
+# Count the frequency of the selected column for the top 10 values
+counts_10 = df[column].value_counts().head(10)
+counts = df[column].value_counts()
+
+# Create a chart based on the user's selection
+if plot_type == "Line Chart":
+    fig = px.line(x=counts.index, y=counts.values)
     
-    for match in email_matches:
-        text = text.replace(match, f'<span style="background-color: #ffff00">{match}</span>')
-        
-    for match in ip_matches:
-        text = text.replace(match, f'<span style="background-color: #ff00ff">{match}</span>')
-
-    for match in cve_matches:
-        text = text.replace(match, f'<span style="background-color: #00ff00">{match}</span>')
-
-    for match in asn_matches:
-        text = text.replace(match, f'<span style="background-color: #0000ff">{match}</span>')
-        
-    return text
-
-def main():
-    st.title('IOC Highlighter')
-    input_text = st.text_area('Enter text:', height=200)
+if plot_type == "Bar Chart":
+    fig = px.bar(x=counts.index, y=counts.values)
     
-    if input_text:
-        output_text = highlight_iocs(input_text)
-        st.markdown(output_text, unsafe_allow_html=True)
-        
-        email_regex = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b'
-        ip_regex = r'\b(?:\d{1,3}\.){3}\d{1,3}\b'
-        cve_regex = r'\bCVE-\d{4}-\d{4,7}\b'
-        asn_regex = r'\bAS\d+\b'
-        
-        email_matches = [(match, 'Email') for match in re.findall(email_regex, input_text)]
-        ip_matches = [(match, 'IP Address') for match in re.findall(ip_regex, input_text)]
-        cve_matches = [(match, 'CVE') for match in re.findall(cve_regex, input_text)]
-        asn_matches = [(match, 'ASN') for match in re.findall(asn_regex, input_text)]
-        
-        data = {'Type': [match[1] for match in email_matches + ip_matches + cve_matches + asn_matches],
-                'Value': [match[0] for match in email_matches + ip_matches + cve_matches + asn_matches]}
-        
-        df = pd.DataFrame(data)
-        st.write(df)
+if plot_type == "Pie Chart":
+    fig = px.pie(names=counts_10.index, values=counts_10.values)
+    
+elif plot_type == "Word Cloud":
+    # Create a wordcloud from the vulnerabilityName column
+    text = " ".join(df[column].fillna(""))
+    wordcloud = WordCloud(width=800, height=400).generate(text)
+    # Display the wordcloud as an image
+    st.image(wordcloud.to_array(), use_column_width=True)
 
-if __name__ == '__main__':
-    main() 
+# Count the number of CVEs on the list
+num_cves = df.shape[0]
+
+# Count the number of unique products
+num_products = df["product"].nunique()
+
+# Count the number of unique vendors
+num_vendors = df["vendorProject"].nunique()
+
+# Select the most recent dateAdded
+most_recent = df["dateAdded"].max()
+
+# Count the number of CVEs added on the date of most_recent
+num_added_on_most_recent = df[df["dateAdded"] == most_recent].shape[0]
+
+# Select the CVEs added on date of most_recent
+most_recent_cves = df[df['dateAdded'] == most_recent]['cveID'].tolist()
+
+# Select the most frequent value in the product column
+most_frequent_product = df["product"].value_counts().index[0]
+
+# Select the frequency of the most frequent value
+frequency = df["product"].value_counts().max()
+
+# Divide the app into three equal-width columns
+col1, col2, col3, col4 = st.columns(4)
+
+# Display the metrics in separate columns
+with col1:
+    st.metric("Last Update", most_recent, f"{num_added_on_most_recent} CVEs Added")
+    st.write(most_recent_cves)
+
+with col2:
+    st.metric("Product With Most CISA KEV CVEs", most_frequent_product, f"{frequency} CVEs")
+
+with col3:
+    st.metric("Number of Products", num_products, f"From {num_vendors} Vendors")    
+    
+with col4:
+    st.metric("Number of CVEs", num_cves)
+
+# Display the chart using Streamlit
+st.plotly_chart(fig)
+st.dataframe(df)
