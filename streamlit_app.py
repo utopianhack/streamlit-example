@@ -70,6 +70,7 @@ num_added_on_most_recent = df[df["dateAdded"] == most_recent].shape[0]
 
 # Select the CVEs added on date of most_recent
 most_recent_cves = df[df['dateAdded'] == most_recent]['cveID'].tolist()
+most_recent_cves = most_recent_cves.strip("[]'")
 
 #most_recent_cves_details = df[df["dateAdded"] == most_recent]
 
