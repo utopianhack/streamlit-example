@@ -13,6 +13,7 @@ st.set_page_config(layout="wide")
 
 # Add a sidebar
 st.sidebar.image("https://upload.wikimedia.org/wikipedia/commons/1/1f/CISA_Logo.png", width=200)
+st.sidebar.button('[CISA KEV Catalog](https://www.cisa.gov/sites/default/files/csv/known_exploited_vulnerabilities.csv)') 
 st.sidebar.title("Select Plot Type")
 
 # Add a title
