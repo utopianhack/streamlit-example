@@ -67,7 +67,7 @@ most_recent = df["dateAdded"].max()
 num_added_on_most_recent = df[df["dateAdded"] == most_recent].shape[0]
 
 # Select the CVEs added on date of most_recent
-most_recent_cves = df[df['dateAdded'] == most_recent]['cveID'].tolist()
+most_recent_cves = df[df['dateAdded'] == most_recent]['cveID']
 
 # Select the most frequent value in the product column
 most_frequent_product = df["product"].value_counts().index[0]
@@ -81,8 +81,8 @@ col1, col2, col3, col4 = st.columns(4)
 # Display the metrics in separate columns
 with col1:
     st.metric("Last Update", most_recent, f"{num_added_on_most_recent} CVEs Added")
-    #st.write(most_recent_cves)
-    st.write(most_recent)
+    st.write(most_recent_cves)
+    #st.write(most_recent)
 
 with col2:
     st.metric("Product With Most CISA KEV CVEs", most_frequent_product, f"{frequency} CVEs")
